@@ -1,6 +1,6 @@
 import java.awt.EventQueue;
 
-//editing
+//editing stuff
 public class ATP {
 
 	public static void main(String[] args) {
