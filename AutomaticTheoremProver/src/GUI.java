@@ -222,22 +222,20 @@ public class GUI {
 	 * Run when the "Prove" button is clicked.
 	 */
 	protected void prove() {
-		prover.setTypes(typesArea.getText());
-		prover.setConstants(constantsArea.getText());
-		prover.setVariables(variablesArea.getText());
-		prover.setPredicates(predicatesArea.getText());
-		prover.setAxioms(axiomsArea.getText());
-		prover.setTheorems(theoremsArea.getText());
-		prover.print();
+		try {
+			prover.setTypes(typesArea.getText());
+			prover.setConstants(constantsArea.getText());
+			prover.setVariables(variablesArea.getText());
+			prover.setPredicates(predicatesArea.getText());
+			prover.setAxioms(axiomsArea.getText());
+			prover.setTheorems(theoremsArea.getText());
+			prover.prove();
+		} catch(IllegalArgumentException ex) {
+			proofsArea.setText(ex.getMessage());
+		}
 	}
 
 	public void setProof(String proof) {
 		proofsArea.setText(proof);
-	}
-	
-	public void error(String error) {
-		Font f = new Font();
-		proofsArea.setFont());
-		proofsArea.setText(error);
 	}
 }
