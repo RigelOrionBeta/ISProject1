@@ -15,6 +15,8 @@ import javax.swing.LayoutStyle.ComponentPlacement;
 public class GUI {
 
 	private JFrame frame;
+	
+	private Prover prover;
 
 	private JTextArea theoremsArea = new JTextArea();
 	private JTextArea axiomsArea = new JTextArea();
@@ -29,6 +31,8 @@ public class GUI {
 	 */
 	public GUI() {
 		initialize();
+		proofsArea.setEditable(false);
+		frame.setSize(1025,700);
 	}
 
 	/**
@@ -208,17 +212,25 @@ public class GUI {
 
 		frame.setVisible(true);
 	}
+	
+	protected void setModel(Prover prover) {
+		this.prover = prover;
+	}
 
 	/*
 	 * Run when the "Prove" button is clicked.
 	 */
 	protected void prove() {
-		System.out.println(proofsArea.getText());
-		System.out.println(typesArea.getText());
-		System.out.println(constantsArea.getText());
-		System.out.println(variablesArea.getText());
-		System.out.println(predicatesArea.getText());
-		System.out.println(axiomsArea.getText());
-		System.out.println(theoremsArea.getText());
+		prover.setTypes(typesArea.getText());
+		prover.setConstants(constantsArea.getText());
+		prover.setVariables(variablesArea.getText());
+		prover.setPredicates(predicatesArea.getText());
+		prover.setAxioms(axiomsArea.getText());
+		prover.setTheorems(theoremsArea.getText());
+		
+	}
+
+	public void setProof(String proof) {
+		
 	}
 }
