@@ -1,4 +1,5 @@
 import java.awt.Color;
+import java.awt.Font;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
@@ -227,10 +228,16 @@ public class GUI {
 		prover.setPredicates(predicatesArea.getText());
 		prover.setAxioms(axiomsArea.getText());
 		prover.setTheorems(theoremsArea.getText());
-		
+		prover.print();
 	}
 
 	public void setProof(String proof) {
-		
+		proofsArea.setText(proof);
+	}
+	
+	public void error(String error) {
+		Font f = new Font();
+		proofsArea.setFont());
+		proofsArea.setText(error);
 	}
 }
