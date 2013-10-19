@@ -1,7 +1,5 @@
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 import java.util.Scanner;
 
 
@@ -54,6 +52,7 @@ public class Prover {
 			if(types.contains(tokens[1])) {				// check if type is valid, (been declared by user as a "Type")
 				constants.put(tokens[0], tokens[1]);	// add the constant to the list of constants associated with that type
 			} else {
+				sc.close();
 				throw new IllegalArgumentException("ERROR on " + temp + ": Type " + tokens[1] + " has not been declared.");
 			}
 		}
@@ -72,6 +71,7 @@ public class Prover {
 			if(types.contains(tokens[1])) {				// check if type is valid, (been declared by user as a "Type")
 				variables.put(tokens[0], tokens[1]);	// add the constant to the list of constants associated with that type
 			} else {
+				sc.close();
 				throw new IllegalArgumentException("ERROR on " + temp + ": Type " + tokens[1] + " has not been declared.");
 			}
 		}
@@ -91,17 +91,20 @@ public class Prover {
 				Predicate temp = new Predicate(name, arguments);
 				predicates.add(temp);
 			} else {
-				throw new IllegalArgumentException("ERROR on " + predicate + ": one or more arguments have not been defined.");
+				sc.close();
+				throw new IllegalArgumentException("ERROR on " + predicate + ": one or more types have not been defined.");
 			}
 		}
+		sc.close();
 	}
 
-	public void setAxioms(String axioms) {
+	public void setAxioms(String s) {
+		axioms = new ArrayList<Axiom>();
 		
 	}
 
-	public void setTheorems(String theorems) {
-		
+	public void setTheorems(String s) {
+		theorems = new ArrayList<Theorem>();
 	}
 	
 	public void prove() {
