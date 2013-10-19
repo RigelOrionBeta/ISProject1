@@ -135,7 +135,7 @@ public class Prover {
 	private boolean validArguments(String[] args) {
 		boolean valid = true;
 		for(String arg : args) {
-			if(!variables.containsKey(arg)) {
+			if(!types.contains(arg)) {
 				valid = false;
 				break;
 			}

@@ -32,7 +32,7 @@ public class GUI {
 	 */
 	public GUI() {
 		initialize();
-		proofsArea.setEditable(false);
+		proofsArea.setEditable(true);
 		frame.setSize(1025,700);
 	}
 
