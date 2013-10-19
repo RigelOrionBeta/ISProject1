@@ -139,8 +139,10 @@ public class Node {
 	
 	public String toString() {
 		if( left != null && right != null) {
+			System.out.println("HELLO");
 			return negativeSign() + "(" + left.toString()  + root + right.toString() + ")";
 		} else {
+			System.out.println("GOODBYE");
 			return negativeSign() + root;
 		}
 	}

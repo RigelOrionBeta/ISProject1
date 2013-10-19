@@ -100,11 +100,22 @@ public class Prover {
 
 	public void setAxioms(String s) {
 		axioms = new ArrayList<Axiom>();
-		
+		Scanner sc = new Scanner(s);
+		while(sc.hasNextLine()) {
+			Axiom axiom = new Axiom(sc.nextLine());
+			axioms.add(axiom);
+		}
+		sc.close();
 	}
 
 	public void setTheorems(String s) {
 		theorems = new ArrayList<Theorem>();
+		Scanner sc = new Scanner(s);
+		while(sc.hasNextLine()) {
+			Theorem theorem = new Theorem(sc.nextLine());
+			theorems.add(theorem);
+		}
+		sc.close();
 	}
 	
 	public void prove() {
@@ -115,26 +126,38 @@ public class Prover {
 			proof+=type + NL;
 		}
 		proof+=NL;
-		// print all types and their associated constants
+		// print all constants
 		proof+="Constants:" + NL;
 		for(String constant : constants.keySet()) {
 			proof += (constant + " = " + constants.get(constant) + NL);
 		}
 		proof+=NL;
-		// print all types and their associated variables
+		// print all variables
 		proof+="Variables:" + NL;
 		for(String variable : variables.keySet()) {
 			proof += (variable + " = " + variables.get(variable)) + NL;
 		}
 		proof+=NL;
-		// print all types and their associated variables
+		// print all predicates
 		proof+="Predicates:" + NL;
 		for(Predicate predicate : predicates) {
 			proof += predicate.toString() + NL;
 		}
+		proof+=NL;
+		//print all axioms
+		proof+="Axioms:" + NL;
+		for(Axiom axiom : axioms) {
+			proof +=axiom.toString() + NL;
+		}
+		proof+=NL;
+		//print all axioms
+		proof+="Theorems:" + NL;
+		for(Theorem theorem : theorems) {
+			proof +=theorem.toString() + NL;
+		}
 		gui.setProof(proof);
 	}
-	
+
 	private boolean validArguments(String[] args) {
 		boolean valid = true;
 		for(String arg : args) {

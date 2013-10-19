@@ -11,8 +11,8 @@ public class Axiom {
 	
 	public String toString() {
 		String exp = axiom.toString();
-		exp.replaceAll(Node.IMPLY+"", "=>");
-		exp.replaceAll(Node.DOUBLE_IMPLY+"", "<=>");
+		exp.replaceAll( Node.IMPLY+"", "=>");
+		exp.replaceAll( "\\" + Node.DOUBLE_IMPLY, "<=>");
 		return exp;
 	}
 	
