@@ -20,26 +20,26 @@ public class Node {
 	
 	private String root;			// logical operator (&,|,>,*) or argument (predicate)
 	
-	public Node( String expression ) {
+	public Node(String expression) {
 		setup(expression);
-	}
-	
-	public Node(Node node) {
-		setup(node.toString());
 	}
 	
 	private void setup(String expression) {
 		// if there are parentheses around the entire expression, and the entire expression is negated
+		System.out.println(expression);
 		if(encased(expression) && expression.startsWith(NEGATIVE+"")) {
+			System.out.println("1");
 			negative = true;						// make the node negative
 			expression = expression.substring(1);	// remove the negative sign
 			expression = trim(expression);			// trim the useless parentheses
 		}
 		// if there is a logical operator in there, parse the arguments
 		if(	expression.contains(AND + "") || expression.contains(OR + "") || expression.contains(IMPLY + "")) {
+			System.out.println("2");
 			expression = trim(expression);
 			findMiddle(expression);
 		} else {	// its a leaf, meaning its an argument itself
+			System.out.println("3");
 			negative = expression.startsWith(NEGATIVE+"");
 			root = expression.replace(NEGATIVE + "", "");
 			left = null;
@@ -249,14 +249,9 @@ public class Node {
 				String LR = left.right.toString();
 				String R = right.toString();
 
-				left.left = new Node(LL);
-				left.right = new Node(R);
-				right.left = new Node(LR);
-				right.right = new Node(R);
-
-				left.root = OR+"";
-				right.root = OR+"";
-				root = AND+"";
+				String newNode = PLEFT + R + OR + LL + PRIGHT + AND + PLEFT + R + OR + LR + PRIGHT;
+				setup(newNode);
+				
 				return false;
 			}
 		} else if(!isLeaf() && !right.isLeaf())  {
@@ -267,15 +262,11 @@ public class Node {
 				String RL = right.left.toString();
 				String RR = right.right.toString();
 				String L = left.toString();
-
-				left.left = new Node(L);
-				left.right = new Node(RL);
-				right.left = new Node(L);
-				right.right = new Node(RR);
-
-				left.root = OR+"";
-				right.root = OR+"";
-				root = AND+"";
+				
+				// construct new node from old
+				String newNode = PLEFT + L + OR + RL + PRIGHT + AND + PLEFT + L + OR + RR + PRIGHT;
+				setup(newNode);	
+				
 				return false;
 			}
 		}
