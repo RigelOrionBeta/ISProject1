@@ -275,4 +275,18 @@ public class Node {
 		}
 		return node;
 	}
+	
+	/** toFlatString()
+	 * only useful when in CNF
+	 * @return A flat representation of a node (without parentheses)
+	 */
+	public String toFlatString() {
+		String node;
+		if( left != null && right != null) {
+			node = negativeSign() + left.toFlatString()  + root + right.toFlatString();
+		} else {
+			node = negativeSign() + root;
+		}
+		return node;
+	}
 }

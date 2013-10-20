@@ -63,4 +63,8 @@ public class Axiom {
 		else
 			return false;
 	}
+
+	public String toFlatString() {
+		return axiom.toFlatString();
+	}
 }
