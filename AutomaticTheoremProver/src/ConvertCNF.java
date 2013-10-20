@@ -21,6 +21,11 @@ public class ConvertCNF {
 		// Distribution Law:
 		// 		(A&B)|C becomes
 		//		(A|C)&(B|C)
-		//axiom.applyDistribution();
+		System.out.println("HERE!");
+		boolean flag;
+		while((flag = !axiom.applyDistribution())) {
+			System.out.println(flag);
+		}
+		System.out.println("BOB: " + axiom);
 	}
 }

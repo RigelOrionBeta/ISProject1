@@ -30,8 +30,8 @@ public class Axiom {
 		axiom.convertImply();
 	}
 	
-	public void applyDistribution() {
-		axiom.applyDistribution();
+	public boolean applyDistribution() {
+		return axiom.applyDistribution();
 	}
 	
 	// allow user to set what they'd like the operator symbols to be

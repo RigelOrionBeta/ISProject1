@@ -21,6 +21,14 @@ public class Node {
 	private String root;			// logical operator (&,|,>,*) or argument (predicate)
 	
 	public Node( String expression ) {
+		setup(expression);
+	}
+	
+	public Node(Node node) {
+		setup(node.toString());
+	}
+	
+	private void setup(String expression) {
 		// if there are parentheses around the entire expression, and the entire expression is negated
 		if(encased(expression) && expression.startsWith(NEGATIVE+"")) {
 			negative = true;						// make the node negative
@@ -175,27 +183,6 @@ public class Node {
 		}
 	}
 	
-	/** root()
-	 * @return left  node left of this one
-	 */
-	private String root() {
-		return root;
-	}
-
-	/** left()
-	 * @return left  node left of this one
-	 */
-	public Node left() {
-		return left;
-	}
-	
-	/** right()
-	 * @return right  node right of this one
-	 */
-	public Node right() {
-		return right;
-	}
-	
 	/** isLeaf()
 	 * @return return true if there are not left and right nodes, false otherwise
 	 */
@@ -252,22 +239,51 @@ public class Node {
 		}
 	}
 
-	public void applyDistribution() {
+	public boolean applyDistribution() {
 		if(!isLeaf() && !left.isLeaf()) {
-			// apply distribution law
-			// (left.left & left.right) | right  			-- BEFORE
-			// (left.left | right) & (left.right | right)	-- AFTER
-			if(root.equals(OR) && left.root().equals(AND)) {
-				root = AND + "";
-				
+			if(root.equals(OR+"") && left.root.equals(AND+"")) {
+				// apply distribution law
+				// (left.left & left.right) | right  			-- BEFORE
+				// (left.left | right) & (left.right | right)	-- AFTER
+				String LL = left.left.toString();
+				String LR = left.right.toString();
+				String R = right.toString();
+
+				left.left = new Node(LL);
+				left.right = new Node(R);
+				right.left = new Node(LR);
+				right.right = new Node(R);
+
 				left.root = OR+"";
-				left.left = left.left();
-				left.right = right;
-				
 				right.root = OR+"";
-				right.left = left.right();
-				right.right = right;
+				root = AND+"";
+				return false;
 			}
+		} else if(!isLeaf() && !right.isLeaf())  {
+			if(root.equals(OR+"") && right.root.equals(AND+"")) {
+				// apply distribution law
+				// left | (right.left & right.right)  			-- BEFORE
+				// (left | right.left) & (left | right.right)	-- AFTER
+				String RL = right.left.toString();
+				String RR = right.right.toString();
+				String L = left.toString();
+
+				left.left = new Node(L);
+				left.right = new Node(RL);
+				right.left = new Node(L);
+				right.right = new Node(RR);
+
+				left.root = OR+"";
+				right.root = OR+"";
+				root = AND+"";
+				return false;
+			}
+		}
+
+		if(!isLeaf()) {
+			return left.applyDistribution() && right.applyDistribution();
+		} else {
+			return true;
 		}
 	}
 }
