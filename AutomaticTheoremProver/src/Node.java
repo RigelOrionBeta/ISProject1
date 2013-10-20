@@ -15,10 +15,10 @@ public class Node {
 	public static final char PRIGHT = ')';
 	
 	private boolean negative;		// if this node is negative
-	private Node left;				// left argument of this node
-	private Node right;				// right argument of this node
+	public Node left;				// left argument of this node
+	public Node right;				// right argument of this node
 	
-	private String root;			// logical operator (&,|,>,*) or argument (predicate)
+	public String root;			// logical operator (&,|,>,*) or argument (predicate)
 	
 	public Node(String expression) {
 		setup(expression);
@@ -26,20 +26,16 @@ public class Node {
 	
 	private void setup(String expression) {
 		// if there are parentheses around the entire expression, and the entire expression is negated
-		System.out.println(expression);
 		if(encased(expression) && expression.startsWith(NEGATIVE+"")) {
-			System.out.println("1");
 			negative = true;						// make the node negative
 			expression = expression.substring(1);	// remove the negative sign
 			expression = trim(expression);			// trim the useless parentheses
 		}
 		// if there is a logical operator in there, parse the arguments
 		if(	expression.contains(AND + "") || expression.contains(OR + "") || expression.contains(IMPLY + "")) {
-			System.out.println("2");
 			expression = trim(expression);
 			findMiddle(expression);
 		} else {	// its a leaf, meaning its an argument itself
-			System.out.println("3");
 			negative = expression.startsWith(NEGATIVE+"");
 			root = expression.replace(NEGATIVE + "", "");
 			left = null;
@@ -190,17 +186,6 @@ public class Node {
 		return left == null && right == null;
 	}
 	
-	/** toString()
-	 * @return String representation of this node
-	 */
-	public String toString() {
-		if( left != null && right != null) {
-			return negativeSign() + "(" + left.toString()  + root + right.toString() + ")";
-		} else {
-			return negativeSign() + root;
-		}
-	}
-	
 	/** convertImply()
 	 * apply material implication to this node and to nodes branching from it
 	 */
@@ -276,5 +261,18 @@ public class Node {
 		} else {
 			return true;
 		}
+	}
+	
+	/** toString()
+	 * @return String representation of this node
+	 */
+	public String toString() {
+		String node;
+		if( left != null && right != null) {
+			node = negativeSign() + "(" + left.toString()  + root + right.toString() + ")";
+		} else {
+			node = negativeSign() + root;
+		}
+		return node;
 	}
 }

@@ -19,8 +19,9 @@ public class Prover {
 	private HashMap<String, String> variables;
 	private ArrayList<Predicate> predicates;
 	private ArrayList<Axiom> axioms;
-	private ArrayList<Theorem> theorems;
+	private ArrayList<Axiom> theorems;
 
+	Resolution resolution;
 
 	public Prover() {
 		
@@ -103,26 +104,43 @@ public class Prover {
 		axioms = new ArrayList<Axiom>();
 		Scanner sc = new Scanner(s);
 		while(sc.hasNextLine()) {
-			Axiom axiom = new Axiom(sc.nextLine());
-			ConvertCNF.convert(axiom);
-			axioms.add(axiom);
+			axioms.add(new Axiom(sc.nextLine()));
 		}
 		sc.close();
 	}
 
 	public void setTheorems(String s) {
-		theorems = new ArrayList<Theorem>();
+		theorems = new ArrayList<Axiom>();
 		Scanner sc = new Scanner(s);
 		while(sc.hasNextLine()) {
-			Theorem theorem = new Theorem(sc.nextLine());
-			theorems.add(theorem);
+			theorems.add(new Axiom(sc.nextLine()));
 		}
 		sc.close();
 	}
 	
 	public void prove() {
+		resolution = new Resolution();
+		
+		if(axioms == null || axioms.size() == 0) {
+			gui.setProof("Must have at least one axiom");
+			return;
+		} else {
+			for(Axiom axiom : axioms) resolution.addAxiom(axiom);
+		}
+		
+		if(theorems == null || theorems.size() == 0) {
+			gui.setProof("Must have at least one theorem");
+			return;
+		} else {
+			for(Axiom theorem : theorems) resolution.addTheorem(theorem);
+		}
+		
+		resolution.begin();
+		
 		// print all types
 		String proof = "";
+		
+		/*
 		proof+="Types:" + NL;
 		for( String type : types ) {
 			proof+=type + NL;
@@ -154,9 +172,11 @@ public class Prover {
 		proof+=NL;
 		//print all axioms
 		proof+="Theorems:" + NL;
-		for(Theorem theorem : theorems) {
+		for(Axiom theorem : theorems) {
 			proof +=theorem.toString() + NL;
 		}
+		*/
+		proof += resolution.getProof();
 		gui.setProof(proof);
 	}
 

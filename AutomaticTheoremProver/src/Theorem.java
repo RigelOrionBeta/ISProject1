@@ -1,19 +1,14 @@
 
 public class Theorem {
 	
-	private Node theorem;
+	private Axiom theorem;
 
 	public Theorem(String expression) {
-		expression.replaceAll("=>", Node.IMPLY+"");
-		expression.replaceAll("<=>", Node.DOUBLE_IMPLY+"");
-		theorem = new Node(expression);
+		theorem = new Axiom(expression);
 	}
 	
 	public String toString() {
-		String exp = theorem.toString();
-		exp.replaceAll(Node.IMPLY+"", "=>");
-		exp.replaceAll(Node.DOUBLE_IMPLY+"", "<=>");
-		return exp;
+		return theorem.toString();
 	}
 
 }

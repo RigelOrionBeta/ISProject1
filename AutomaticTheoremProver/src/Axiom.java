@@ -1,10 +1,10 @@
 
 public class Axiom {
 	
-	public static String AND = "&";				// logical AND 
-	public static String OR = "|";				// logical OR
-	public static String IMPLY = "=>";			// logical IMPLICATION (commonly => or ->)
-	public static String DOUBLE_IMPLY = "<==>";	// logical DOUBLE IMPLICATION (commonly <--> or <==>)
+	public static String AND = "&";					// logical AND 
+	public static String OR = "|";					// logical OR
+	public static String IMPLY = "=>";				// logical IMPLICATION (commonly => or ->)
+	public static String DOUBLE_IMPLY = "<==>";		// logical DOUBLE IMPLICATION (commonly <--> or <==>)
 	public static String NEGATIVE = "-";			// logical NEGATION
 	
 	private Node axiom;
@@ -12,13 +12,17 @@ public class Axiom {
 	public Axiom(String expression) {
 		expression = expression.replaceAll(Axiom.IMPLY, Node.IMPLY+"");
 		expression = expression.replaceAll(Axiom.DOUBLE_IMPLY, Node.DOUBLE_IMPLY+"");
+		expression = expression.replaceAll(" ", "");
 		axiom = new Node(expression);
 	}
 	
 	public String toString() {
 		String exp = axiom.toString();
-		exp.replaceAll( Node.IMPLY+"", "=>");
-		exp.replaceAll( "\\" + Node.DOUBLE_IMPLY, "<=>");
+		exp = exp.replaceAll( "\\" + Node.IMPLY+"", "=>");
+		exp = exp.replaceAll( "\\" + Node.DOUBLE_IMPLY, "<=>");
+		if(exp.charAt(0)==Node.PLEFT && exp.charAt(exp.length()-1)==Node.PRIGHT) {
+			exp = exp.substring(1,exp.length()-1);
+		}
 		return exp;
 	}
 
@@ -32,6 +36,10 @@ public class Axiom {
 	
 	public boolean applyDistribution() {
 		return axiom.applyDistribution();
+	}
+	
+	public Node getNode() {
+		return axiom;
 	}
 	
 	// allow user to set what they'd like the operator symbols to be

@@ -10,15 +10,15 @@ public class Predicate {
 	}
 	
 	public String toString() {
-		String retval = name + "( ";
+		String retval = name + "(";
 		for(int i = 0; i < arguments.length; i++) {
 			if(i != 0) {
-				retval += ", " + arguments[i];
+				retval += "," + arguments[i];
 			} else {
 				retval += arguments[i];
 			}
 		}
-		retval += " )";
+		retval += ")";
 		return retval;
 	}
 	
