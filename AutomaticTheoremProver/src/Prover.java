@@ -103,6 +103,7 @@ public class Prover {
 		Scanner sc = new Scanner(s);
 		while(sc.hasNextLine()) {
 			Axiom axiom = new Axiom(sc.nextLine());
+			ConvertCNF.convert(axiom);
 			axioms.add(axiom);
 		}
 		sc.close();
