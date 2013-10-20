@@ -3,19 +3,22 @@ import java.util.ArrayList;
 
 public class Node {
 	
-	public static final char AND = '&';
-	public static final char OR = '|';
-	public static final char IMPLY = '>';
-	public static final char DOUBLE_IMPLY = '*';
+	// the defined operations are below, any argument passed as a Node
+	// must conform to them
+	public static final char AND = '&';				// logical AND 
+	public static final char OR = '|';				// logical OR
+	public static final char IMPLY = '>';			// logical IMPLICATION (commonly => or ->)
+	public static final char DOUBLE_IMPLY = '*';	// logical DOUBLE IMPLICATION (commonly <--> or <==>)
+	public static final char NEGATIVE = '-';		// logical NEGATION
+	
 	public static final char PLEFT = '(';
 	public static final char PRIGHT = ')';
-	public static final char NEGATIVE = '-';
 	
-	private boolean negative;
-	private Node left;
-	private Node right;
+	private boolean negative;		// if this node is negative
+	private Node left;				// left argument of this node
+	private Node right;				// right argument of this node
 	
-	private String root;
+	private String root;			// logical operator (&,|,>,*) or argument (predicate)
 	
 	public Node( String expression ) {
 		// if there are parentheses around the entire expression, and the entire expression is negated
@@ -171,9 +174,15 @@ public class Node {
 			return "";
 		}
 	}
+	
+	/** root()
+	 * @return left  node left of this one
+	 */
+	private String root() {
+		return root;
+	}
 
 	/** left()
-	 * 
 	 * @return left  node left of this one
 	 */
 	public Node left() {
@@ -181,7 +190,6 @@ public class Node {
 	}
 	
 	/** right()
-	 * 
 	 * @return right  node right of this one
 	 */
 	public Node right() {
@@ -189,7 +197,6 @@ public class Node {
 	}
 	
 	/** isLeaf()
-	 * 
 	 * @return return true if there are not left and right nodes, false otherwise
 	 */
 	public boolean isLeaf() {
@@ -197,7 +204,6 @@ public class Node {
 	}
 	
 	/** toString()
-	 * recursive
 	 * @return String representation of this node
 	 */
 	public String toString() {
@@ -243,6 +249,25 @@ public class Node {
 		if(!isLeaf()) {
 			left.propogate();
 			right.propogate();
+		}
+	}
+
+	public void applyDistribution() {
+		if(!isLeaf() && !left.isLeaf()) {
+			// apply distribution law
+			// (left.left & left.right) | right  			-- BEFORE
+			// (left.left | right) & (left.right | right)	-- AFTER
+			if(root.equals(OR) && left.root().equals(AND)) {
+				root = AND + "";
+				
+				left.root = OR+"";
+				left.left = left.left();
+				left.right = right;
+				
+				right.root = OR+"";
+				right.left = left.right();
+				right.right = right;
+			}
 		}
 	}
 }
