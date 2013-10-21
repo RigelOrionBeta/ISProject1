@@ -101,12 +101,14 @@ public class Resolution {
 			proof+= TAB + line + ". " + theorem.toString()  + NL;
 			line++;
 		}
-		
+		int netTheorems = 0;
 		AxiomCNF newTheorem;
 		while((newTheorem = separateTheorems()) != null) {
+			netTheorems++;
 			proof+= TAB + line + ". " + newTheorem.toString() + " by Simplification " +  NL;
 			line++;
 		}
+		System.out.println(theoremsCNF.size());
 		int matches = 0;
 		proof += NL + NL + "Matching theorems with axioms..." + NL;
 		for(int i = 0; i < theoremsCNF.size(); i++) {
@@ -119,14 +121,19 @@ public class Resolution {
 				}
 			}
 		}
+		for(int i = 0; i < theoremsCNF.size(); i++) {
+			if(!theoremsCNF.get(i).canBeSeparated()) {
+				netTheorems++;
+			}
+		}
 		
-		if(matches == theoremsCNF.size()) {
+		if(matches == netTheorems) {
 			proof += NL + NL + "Theorem follows from axioms";
 		} else {
 			proof += NL + NL + "** Theorem does not follow from axioms **";
 		}
 		
-		return matches == theoremsCNF.size();
+		return matches == netTheorems;
 	}
 	
 	/** modusPonens()
