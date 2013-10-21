@@ -113,8 +113,25 @@ public class Resolution {
 			proof+= TAB + line + ". " + newTheorem.toString() + NL;
 			line++;
 		}
+		int matches = 0;
+		proof += NL + NL + "Matching theorems with axioms..." + NL;
+		for(int i = 0; i < theoremsCNF.size(); i++) {
+			AxiomCNF theorem = theoremsCNF.get(i);
+			for(int j = 0; j < axiomsCNF.size(); j++) {
+				AxiomCNF axiom = axiomsCNF.get(j);
+				if(theorem.equals(axiom)) {
+					matches++;
+				}
+			}
+		}
 		
-		return result;
+		if(matches == theoremsCNF.size()) {
+			proof += NL + NL + "Theorem follows from axioms.";
+		} else {
+			proof += NL + NL + "Theorem does not follow from axioms.";
+		}
+		
+		return matches == theoremsCNF.size();
 	}
 	
 	/** modusPonens()
