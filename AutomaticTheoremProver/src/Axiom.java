@@ -7,7 +7,7 @@ public class Axiom {
 	public static String DOUBLE_IMPLY = "<==>";		// logical DOUBLE IMPLICATION (commonly <--> or <==>)
 	public static String NEGATIVE = "-";			// logical NEGATION
 	
-	private Node axiom;
+	private Node axiom;		// head node
 
 	public Axiom(String expression) {
 		expression = expression.replaceAll(Axiom.IMPLY, Node.IMPLY+"");
@@ -16,6 +16,9 @@ public class Axiom {
 		axiom = new Node(expression);
 	}
 	
+	/** toString()
+	 * @return string version of node, converts to user's preference of logical operators
+	 */
 	public String toString() {
 		String exp = axiom.toString();
 		exp = exp.replaceAll( "\\" + Node.IMPLY+"", "=>");
@@ -25,28 +28,6 @@ public class Axiom {
 		}
 		return exp;
 	}
-
-	public void applyDeMorgan() {
-		axiom.propogate();
-	}
-	
-	public void convertImply() {
-		axiom.convertImply();
-	}
-	
-	public boolean applyDistribution() {
-		return axiom.applyDistribution();
-	}
-	
-	public Node getNode() {
-		return axiom;
-	}
-	
-	// allow user to set what they'd like the operator symbols to be
-	public void setAnd(String and) { 					if(!checkCollisions(and)) 			AND = and; }
-	public void setOr(String or) { 						if(!checkCollisions(or)) 			OR = or; }
-	public void setImply(String imply) { 				if(!checkCollisions(imply)) 		IMPLY = imply; }
-	public void setDoubleImply(String doubleImply) { 	if(!checkCollisions(doubleImply))	DOUBLE_IMPLY = doubleImply; }
 	
 	// check if there are collisions with other operators
 	public boolean checkCollisions(String operator) {
@@ -63,8 +44,19 @@ public class Axiom {
 		else
 			return false;
 	}
+	
+	// apply conversions
+	public void applyDeMorgan() { axiom.propogate(); }
+	public void convertImply() { axiom.convertImply(); }
+	public boolean applyDistribution() { return axiom.applyDistribution(); }
 
-	public String toFlatString() {
-		return axiom.toFlatString();
-	}
+	// getters n setters
+	public String toFlatString() { return axiom.toFlatString(); }
+	public Node getNode() { return axiom; }
+	
+	// allow user to set what they'd like the operator symbols to be
+	public void setAnd(String and) { 					if(!checkCollisions(and)) 			AND = and; }
+	public void setOr(String or) { 						if(!checkCollisions(or)) 			OR = or; }
+	public void setImply(String imply) { 				if(!checkCollisions(imply)) 		IMPLY = imply; }
+	public void setDoubleImply(String doubleImply) { 	if(!checkCollisions(doubleImply))	DOUBLE_IMPLY = doubleImply; }
 }

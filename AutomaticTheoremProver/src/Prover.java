@@ -7,6 +7,7 @@ public class Prover {
 	
 	private GUI gui;
 	
+	// final values for logical operators
 	final public static String OR = "^";
 	final public static String AND = "&";
 	final public static String IMPLY = "=>";
@@ -14,6 +15,7 @@ public class Prover {
 	final public static String DOUBLEIMPLY = "<==>";
 	final public static String NL = "\n";
 	
+	// collection of different variables, functions, etc
 	private ArrayList<String> types;
 	private HashMap<String, String> constants;
 	private HashMap<String, String> variables;
@@ -21,11 +23,8 @@ public class Prover {
 	private ArrayList<Axiom> axioms;
 	private ArrayList<Axiom> theorems;
 
-	Resolution resolution;
-
-	public Prover() {
-		
-	}
+	// used to solve the argument
+	private Resolution resolution;
 
 	/** setTypes
 	 *  get all the types and put in ArrayList
@@ -43,6 +42,11 @@ public class Prover {
 		sc.close();
 	}
 
+	/** setConstants()
+	 * 
+	 * @param s  newline separated constants
+	 * @throws IllegalArgumentException
+	 */
 	public void setConstants(String s) throws IllegalArgumentException {
 		// initialize the map 
 		constants = new HashMap<String, String>();
@@ -61,6 +65,11 @@ public class Prover {
 		sc.close();
 	}
 	
+	/** setVariables()
+	 * 
+	 * @param s  newline separated variables
+	 * @throws IllegalArgumentException
+	 */
 	public void setVariables(String s) throws IllegalArgumentException {
 		// initialize the list 
 		variables = new HashMap<String, String>();
@@ -80,6 +89,11 @@ public class Prover {
 		sc.close();
 	}
 
+	/** setPredicates()
+	 * 
+	 * @param s  newline separated predicates
+	 * @throws IllegalArgumentException
+	 */
 	public void setPredicates(String s) throws IllegalArgumentException {
 		predicates = new ArrayList<Predicate>();
 		Scanner sc = new Scanner(s);
@@ -100,6 +114,10 @@ public class Prover {
 		sc.close();
 	}
 
+	/** setAxioms()
+	 * 
+	 * @param s  newline separated axioms
+	 */
 	public void setAxioms(String s) {
 		axioms = new ArrayList<Axiom>();
 		Scanner sc = new Scanner(s);
@@ -109,6 +127,10 @@ public class Prover {
 		sc.close();
 	}
 
+	/** setTheorems()
+	 * 
+	 * @param s  newline separated theorems
+	 */
 	public void setTheorems(String s) {
 		theorems = new ArrayList<Axiom>();
 		Scanner sc = new Scanner(s);
@@ -118,6 +140,9 @@ public class Prover {
 		sc.close();
 	}
 	
+	/** prove()
+	 * begin proving 
+	 */
 	public void prove() {
 		resolution = new Resolution();
 		
@@ -137,49 +162,16 @@ public class Prover {
 		
 		resolution.begin();
 		
-		// print all types
 		String proof = "";
-		
-		/*
-		proof+="Types:" + NL;
-		for( String type : types ) {
-			proof+=type + NL;
-		}
-		proof+=NL;
-		// print all constants
-		proof+="Constants:" + NL;
-		for(String constant : constants.keySet()) {
-			proof += (constant + " = " + constants.get(constant) + NL);
-		}
-		proof+=NL;
-		// print all variables
-		proof+="Variables:" + NL;
-		for(String variable : variables.keySet()) {
-			proof += (variable + " = " + variables.get(variable)) + NL;
-		}
-		proof+=NL;
-		// print all predicates
-		proof+="Predicates:" + NL;
-		for(Predicate predicate : predicates) {
-			proof += predicate.toString() + NL;
-		}
-		proof+=NL;
-		//print all axioms
-		proof+="Axioms:" + NL;
-		for(Axiom axiom : axioms) {
-			proof +=axiom.toString() + NL;
-		}
-		proof+=NL;
-		//print all axioms
-		proof+="Theorems:" + NL;
-		for(Axiom theorem : theorems) {
-			proof +=theorem.toString() + NL;
-		}
-		*/
 		proof += resolution.getProof();
 		gui.setProof(proof);
 	}
 
+	/** check if arguments of predicate are valid
+	 * 
+	 * @param args the arguments
+	 * @return true if valid, otherwise false
+	 */
 	private boolean validArguments(String[] args) {
 		boolean valid = true;
 		for(String arg : args) {
@@ -191,12 +183,20 @@ public class Prover {
 		return valid;
 	}
 	
+	/** trim()
+	 * trim whitespaces
+	 * @param s  string to trim
+	 */
 	private void trim(String[] s) {
 		for(int i = 0; i < s.length; i++) {
 			s[i] = s[i].trim();
 		}
 	}
 
+	/** setView()
+	 * 
+	 * @param gui GUI being used
+	 */
 	public void setView(GUI gui) {
 		this.gui = gui;
 	}

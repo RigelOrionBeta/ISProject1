@@ -264,24 +264,25 @@ public class Resolution {
 			return found == cnf.length();
 		}
 		
+		/** modusPonens()
+		 * apply modus ponens to two axioms
+		 * @param test  the axiom to apply to
+		 * @return a new axiom if a new one can be created, otherwise null
+		 */
 		public AxiomCNF modusPonens(AxiomCNF test) {
+			// OR'd values arraylist
 			ArrayList<String> ors1 = new ArrayList<String>();
 			ArrayList<String> ors2 = new ArrayList<String>();
 			
-			if(test.canBeSeparated() || this.canBeSeparated()) {
-				return null;
-			}
-			if(test.length() > this.length()) {
-				return null;
-			}
-			for(String s : operands[0].split("\\|")) {
-				ors1.add(s);
-			}
+			// only accepts completely separated axioms
+			if(test.canBeSeparated() || this.canBeSeparated()) return null;
+			if(test.length() > this.length()) return null;
 			
-			for(String s : test.getOperands()[0].split("\\|")) {
-				ors2.add(s);
-			}
+			// convert array of OR'd values to arraylist
+			for(String s : operands[0].split("\\|")) ors1.add(s);
+			for(String s : test.getOperands()[0].split("\\|")) ors2.add(s);
 			
+			// reverse the polarity of the individual values
 			for(int i = 0; i < ors2.size(); i++) {
 				String string = new String(ors2.get(i));
 				if(string.startsWith("-")) {
@@ -291,13 +292,15 @@ public class Resolution {
 				}
 			}
 			
+			// remove all instances in ors2 from ors1
 			ors1.removeAll(ors2);
 			
-			if(ors1.size() == 0) {
-				return null;
-			}
+			// return null if they are exactly the same
+			// this means a contradiction exists, 
+			// but this functionality isn't implemented
+			if(ors1.size() == 0) return null;
 			
-			
+			// create a new axiom 
 			String newAxiom = "";
 			for(int i = 0; i < ors1.size(); i++) {
 				if(i==0) {
@@ -306,7 +309,6 @@ public class Resolution {
 					newAxiom += "|" + ors1.get(i);
 				}
 			}
-			
 			return new AxiomCNF(newAxiom);
 		}
 		
