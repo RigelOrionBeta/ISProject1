@@ -1,22 +1,35 @@
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 public class Resolution {
 	
-	private static String TAB = "     ";
-	private static String NL = "\n";
+	// oft used strings
+	private static final String TAB = "     ";
+	private static final String NL = "\n";
 	
+	// proof
 	private String proof;
+	
+	// axioms and theorems
 	private ArrayList<Axiom> axioms;
 	private ArrayList<Axiom> theorems;
 	
+	// axioms and theorems in CNF
 	private ArrayList<AxiomCNF> axiomsCNF;
 	private ArrayList<AxiomCNF> theoremsCNF;
 	
+	/** Resolution
+	 */
 	public Resolution() {
 		axioms = new ArrayList<Axiom>();
 		theorems = new ArrayList<Axiom>();
 	}
 	
+	/** addAxiom()
+	 * @param axiom  axiom to be added to axiom list
+	 * @return true if it was added, false if it wasnt
+	 */
 	public boolean addAxiom(Axiom axiom) {
 		if( axioms.contains(axiom)) {
 			return false;
@@ -26,6 +39,10 @@ public class Resolution {
 		}
 	}
 	
+	/** addTheorem()
+	 * @param theorem  theorem to be added to theorem list
+	 * @return true if it was added, false if it wasnt
+	 */
 	public boolean addTheorem(Axiom theorem) {
 		if(theorems.contains(theorem)) {
 			return false;
@@ -35,10 +52,19 @@ public class Resolution {
 		}
 	}
 	
+	/** getProof()
+	 * 
+	 * @return A string representation of the proof by resolution
+	 */
 	public String getProof() {
 		return proof;
 	}
 	
+	/**
+	 * Begins resolution algorithm, which tries to figure out
+	 * if the axioms list satisfies the theorem list
+	 * @return
+	 */
 	public boolean begin() {
 		axiomsCNF = new ArrayList<AxiomCNF>();
 		theoremsCNF = new ArrayList<AxiomCNF>();
@@ -63,66 +89,91 @@ public class Resolution {
 			proof+= TAB + line + ". " + axiom.toString() + NL;
 			line++;
 		}
+		proof += NL + NL + "Separating Axioms" + NL;
+		AxiomCNF newAxiom;
+		while((newAxiom = separateAxioms()) != null) {
+			proof+= TAB + line + ". " + newAxiom.toString() + NL;
+			line++;
+		}
+		proof += NL + NL + "Applying Modus Ponens" + NL;
+		while((newAxiom = modusPonens()) != null) {
+			proof+= TAB + line + ". " + newAxiom.toString() + NL;
+			line++;
+		}
+		
 		proof += NL + "Theorems" + NL;
 		for(AxiomCNF theorem : theoremsCNF) {
 			proof+= TAB + line + ". " + theorem.toString()  + NL;
 			line++;
 		}
-		proof += NL + NL + "Separating Axioms" + NL;
-		AxiomCNF newAxiom;
-		while((newAxiom = separateAxioms()) != null) {
-			for(AxiomCNF axiom : axiomsCNF) {
-				System.out.println(axiom);
-			}
-			proof+= TAB + line + ". " + newAxiom.toString() + NL;
-			line++;
-		}
+		
 		proof += NL + NL + "Separating Theorems" + NL;
 		AxiomCNF newTheorem;
 		while((newTheorem = separateTheorems()) != null) {
-			for(AxiomCNF theorem : theoremsCNF) {
-				System.out.println(theorem);
-			}
 			proof+= TAB + line + ". " + newTheorem.toString() + NL;
 			line++;
 		}
 		
-		
-		//theoremsCNF.get(0).equals(axiomsCNF.get(0));
-		//axiomsCNF.get(0).equals(theoremsCNF.get(0));
-		//System.out.println("DONE COMPARING");
-		
 		return result;
 	}
 	
-	
-
-	private AxiomCNF separateAxioms() {
-		AxiomCNF[] newAxioms;
-		for(AxiomCNF cnf : axiomsCNF) {
-			if(cnf.canBeSeparated()) {
-				newAxioms = cnf.separate();
-				for(AxiomCNF newAxiom : newAxioms)
-					if(!checkIfAxiom(newAxiom)) {
-						axiomsCNF.add(newAxiom);
-						System.out.println(newAxiom);
-						return newAxiom;
-					}
+	/** modusPonens()
+	 * applies modus ponens to each axiom to find new axioms
+	 * @return null if more can't be found, otherwise the new axiom
+	 */
+	private AxiomCNF modusPonens() {
+		AxiomCNF newAxiom;
+		for(AxiomCNF axiom1 : axiomsCNF) {
+			for(AxiomCNF axiom2 : axiomsCNF ) {
+				newAxiom = axiom1.modusPonens(axiom2);
+				if(newAxiom != null && !checkIfAxiom(newAxiom)) {
+					axiomsCNF.add(newAxiom);
+					return newAxiom;
+				}
 			}
 		}
 		return null;
 	}
 	
+	
+	/** separateAxioms()
+	 * adds a separated axiom to the list of axioms
+	 * @return an AxiomCNF object that isn't already in the axiom list
+	 */
+	private AxiomCNF separateAxioms() {
+		AxiomCNF[] newAxioms;
+		for(AxiomCNF cnf : axiomsCNF) {
+			if(cnf.canBeSeparated()) {
+				newAxioms = cnf.separate();
+				for(AxiomCNF newAxiom : newAxioms) {
+					if(!checkIfAxiom(newAxiom)) {
+						axiomsCNF.add(newAxiom);
+						return newAxiom;
+					}
+				}
+			}
+		}
+		return null;
+	}
+	
+	/** checkIfAxiom()
+	 * 
+	 * @param axiom  axiom to check if it is a axiom
+	 * @return true if in axioms list
+	 */
 	private boolean checkIfAxiom(AxiomCNF axiom) {
 		for(AxiomCNF cnf : axiomsCNF) {
 			if(cnf.equals(axiom)) {
-				System.out.println("Axiom " + axiom + " already exists.");
 				return true;
 			}
 		}
 		return false;
 	}
 	
+	/** separateTheorems()
+	 * 
+	 * @return an AxiomCNF object that isn't already in the theorem list
+	 */
 	private AxiomCNF separateTheorems() {
 		AxiomCNF[] newTheorems;
 		for(AxiomCNF cnf : theoremsCNF) {
@@ -131,7 +182,6 @@ public class Resolution {
 				for(AxiomCNF newTheorem : newTheorems)
 					if(!checkIfTheorem(newTheorem)) {
 						theoremsCNF.add(newTheorem);
-						System.out.println(newTheorem);
 						return newTheorem;
 					}
 			}
@@ -139,16 +189,25 @@ public class Resolution {
 		return null;
 	}
 	
-	private boolean checkIfTheorem(AxiomCNF axiom) {
+	/** checkIfTheorem()
+	 *  
+	 * @param theorem  theorem to check if it is a theorem
+	 * @return true if in theorems list
+	 */
+	private boolean checkIfTheorem(AxiomCNF theorem) {
 		for(AxiomCNF cnf : theoremsCNF) {
-			if(cnf.equals(axiom)) {
-				System.out.println("Axiom " + axiom + " already exists.");
+			if(cnf.equals(theorem)) {
 				return true;
 			}
 		}
 		return false;
 	}
 
+	/** flatten()
+	 * essentially removes parentheses when not necessary (ex. A|(C|B) becomes A|C|B)
+	 * @param axiom  axiom to flatten
+	 * @return  new axiom in CNF form, and flattened
+	 */
 	private AxiomCNF flatten(Axiom axiom) {
 		AxiomCNF cnf;
 		String flat = axiom.toFlatString();
@@ -156,17 +215,27 @@ public class Resolution {
 		return cnf;
 	}
 	
+	/** AxiomCNF
+	 * In-class object specially for resolution.
+	 * Inputs MUST be in CNF for it to work properly.
+	 */
 	public class AxiomCNF {
-		private String[] operands;
+		private String[] operands;		// OR separated values
 		
+		/** AxionCNF()
+		 * creates an array of expressions that only have the OR operator
+		 * @param axiom  String presentation of axiom, must be in CNF and be flat
+		 */
 		public AxiomCNF(String axiom) {
-			operands = axiom.split("&");
+			operands = axiom.split("&");	// splits it based on AND operator
 		}
 		
+		// only can be separated if size is greater than 1
 		public boolean canBeSeparated() {
 			return operands.length > 1;
 		}
 		
+		// returns array of separated values
 		public AxiomCNF[] separate() {
 			AxiomCNF[] separated = new AxiomCNF[operands.length];
 			for(int i = 0; i < operands.length; i++) { 
@@ -175,12 +244,13 @@ public class Resolution {
 			return separated;
 		}
 		
+		// two axioms are equal if they have the same operands, regardless of positioning
 		public boolean equals(AxiomCNF cnf) {
 			int found = 0;
-			System.out.println("Comparing: " + this.toString() + " and " + cnf.toString() );
-			if(cnf.length() != this.length()) {
+			if(cnf == null || cnf.length() != this.length()) {
 				return false;
 			} else {
+				// compare each operand to every other operand
 				for(String operand1 : operands) {
 					String ors1[] = operand1.split("\\|");
 					for(String operand2 : cnf.getOperands()) {
@@ -194,6 +264,53 @@ public class Resolution {
 			return found == cnf.length();
 		}
 		
+		public AxiomCNF modusPonens(AxiomCNF test) {
+			ArrayList<String> ors1 = new ArrayList<String>();
+			ArrayList<String> ors2 = new ArrayList<String>();
+			
+			if(test.canBeSeparated() || this.canBeSeparated()) {
+				return null;
+			}
+			if(test.length() > this.length()) {
+				return null;
+			}
+			for(String s : operands[0].split("\\|")) {
+				ors1.add(s);
+			}
+			
+			for(String s : test.getOperands()[0].split("\\|")) {
+				ors2.add(s);
+			}
+			
+			for(int i = 0; i < ors2.size(); i++) {
+				String string = new String(ors2.get(i));
+				if(string.startsWith("-")) {
+					ors2.set(i, string.substring(1, string.length()));
+				} else {
+					ors2.set(i,"-" + string);
+				}
+			}
+			
+			ors1.removeAll(ors2);
+			
+			if(ors1.size() == 0) {
+				return null;
+			}
+			
+			
+			String newAxiom = "";
+			for(int i = 0; i < ors1.size(); i++) {
+				if(i==0) {
+					newAxiom += ors1.get(0);
+				} else {
+					newAxiom += "|" + ors1.get(i);
+				}
+			}
+			
+			return new AxiomCNF(newAxiom);
+		}
+		
+		// compares two arrays and sees if contents are equal.
 		private boolean equalOperands( String[] var1, String[] var2 ) {
 			int found = 0;
 			if(var1.length != var2.length) {
@@ -210,6 +327,7 @@ public class Resolution {
 			return found == var1.length;
 		}
 
+		// string representation of this axiom
 		public String toString() {
 			String axiom;
 			if(operands.length == 1) {
