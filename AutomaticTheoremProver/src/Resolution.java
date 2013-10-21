@@ -1,6 +1,4 @@
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 
 public class Resolution {
 	
@@ -69,7 +67,6 @@ public class Resolution {
 		axiomsCNF = new ArrayList<AxiomCNF>();
 		theoremsCNF = new ArrayList<AxiomCNF>();
 		
-		boolean result = false;
 		int line = 1;
 		proof = new String();
 		

@@ -33,6 +33,7 @@ public class GUI {
 		initialize();
 		proofsArea.setEditable(true);
 		frame.setSize(1025,700);
+		constantsArea.setVisible(false);
 	}
 
 	/**

@@ -35,7 +35,6 @@ public class Prover {
 		Scanner sc = new Scanner(s);
 		while(sc.hasNextLine()) {
 			String temp = sc.nextLine().trim();
-			System.out.println(temp);
 			if(!temp.equals("")) 
 				types.add(temp);
 		}
